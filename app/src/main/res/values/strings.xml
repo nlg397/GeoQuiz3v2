@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ГеоКвест 3v2</string>
+
+    <string name="question_saransk">Лондон - столица Англии.</string>
+    <string name="question_ocean">Тихий океан больше Атлантического.</string>
+    <string name="question_africa">Нил находится в Египте.</string>
+
+    <string name="question_spb">СПб - столица России.</string>
+    <string name="question_india">Индия находится в Америке.</string>
+    <string name="question_moscow">По Москве ходят медведи.</string>
+
+    <string name="true_button">Правда</string>
+    <string name="false_button">Ложь</string>
+    <string name="next_button">Следующий</string>
+
+    <string name="correct_toast">Правильно!</string>
+    <string name="incorrect_toast">Неправильно!</string>
+</resources>
