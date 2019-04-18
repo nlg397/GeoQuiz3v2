@@ -13,6 +13,12 @@ public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
 
+    private static final String KEY_TRUE_BUTTON_ENABLED = "true_button_is_enabled";
+    private static final String KEY_FALSE_BUTTON_ENABLED = "false_button_is_enabled";
+    private static final String KEY_NEXT_BUTTON_ENABLED = "next_button_is_enabled";
+    private static final String KEY_CORRECT_ANSWERS_COUNT = "correct_answers_count";
+    private static final String KEY_INCORRECT_ANSWERS_COUNT = "incorrect_answers_count";
+
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
@@ -29,6 +35,12 @@ public class QuizActivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
 
+    private boolean mTrueButtonIsEnabled = true;
+    private boolean mFalseButtonIsEnabled = true;
+    private boolean mNextButtonIsEnabled = false;
+    private int mCorrectAnswersCount = 0;
+    private int mIncorrectAnswersCount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,32 +51,52 @@ public class QuizActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+
+            mTrueButtonIsEnabled = savedInstanceState.getBoolean(KEY_TRUE_BUTTON_ENABLED, true);
+            mFalseButtonIsEnabled = savedInstanceState.getBoolean(KEY_FALSE_BUTTON_ENABLED, true);
+            mNextButtonIsEnabled = savedInstanceState.getBoolean(KEY_NEXT_BUTTON_ENABLED, false);
+
+            mCorrectAnswersCount = savedInstanceState.getInt(KEY_CORRECT_ANSWERS_COUNT, 0);
+            mIncorrectAnswersCount = savedInstanceState.getInt(KEY_INCORRECT_ANSWERS_COUNT, 0);
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
         mTrueButton = (Button) findViewById(R.id.true_button);
+        mTrueButton.setEnabled(mTrueButtonIsEnabled);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkAnswer(true);
+
+                setEnabledOfButtons(false);
+
+                checkEnd();
             }
         });
 
         mFalseButton = (Button) findViewById(R.id.false_button);
+        mFalseButton.setEnabled(mFalseButtonIsEnabled);
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
+
+                setEnabledOfButtons(false);
+
+                checkEnd();
             }
         });
 
         mNextButton = (Button) findViewById(R.id.next_button);
+        mNextButton.setEnabled(mNextButtonIsEnabled);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
+
+                setEnabledOfButtons(true);
             }
         });
 
@@ -94,6 +126,13 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+
+        savedInstanceState.putBoolean(KEY_TRUE_BUTTON_ENABLED, mTrueButtonIsEnabled);
+        savedInstanceState.putBoolean(KEY_FALSE_BUTTON_ENABLED, mFalseButtonIsEnabled);
+        savedInstanceState.putBoolean(KEY_NEXT_BUTTON_ENABLED, mNextButtonIsEnabled);
+
+        savedInstanceState.putInt(KEY_CORRECT_ANSWERS_COUNT, mCorrectAnswersCount);
+        savedInstanceState.putInt(KEY_INCORRECT_ANSWERS_COUNT, mIncorrectAnswersCount);
     }
 
     @Override
@@ -120,13 +159,42 @@ public class QuizActivity extends AppCompatActivity {
 
         if (userPressedTrue == answerIsTrue) {
             messageResId = R.string.correct_toast;
+            mCorrectAnswersCount ++;
         } else {
             messageResId = R.string.incorrect_toast;
+            mIncorrectAnswersCount ++;
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
                 .show();
     }
 
+    private void setEnabledOfButtons(boolean nextButtonIsPressed) {
+        if (nextButtonIsPressed) {
+            mTrueButtonIsEnabled = true;
+            mFalseButtonIsEnabled = true;
+            mNextButtonIsEnabled = false;
+        } else {
+            mTrueButtonIsEnabled = false;
+            mFalseButtonIsEnabled = false;
+            mNextButtonIsEnabled = true;
+        }
+        mTrueButton.setEnabled(mTrueButtonIsEnabled);
+        mFalseButton.setEnabled(mFalseButtonIsEnabled);
+        mNextButton.setEnabled(mNextButtonIsEnabled);
+    }
+
+    private void checkEnd() {
+        if (mCurrentIndex == mQuestionBank.length - 1) {
+            double percent = (double)mCorrectAnswersCount /
+                    (mCorrectAnswersCount + mIncorrectAnswersCount) * 100;
+            String message = String.format(getResources().getString(R.string.end_toast),
+                    mCorrectAnswersCount, mIncorrectAnswersCount, percent);
+            Toast.makeText(this, message, Toast.LENGTH_LONG)
+                    .show();
+            mCorrectAnswersCount = 0;
+            mIncorrectAnswersCount = 0;
+        }
+    }
 
 }
 

@@ -15,4 +15,6 @@
 
     <string name="correct_toast">Правильно!</string>
     <string name="incorrect_toast">Неправильно!</string>
+
+    <string name="end_toast">Конец. Правильно: %d, неправильно: %d. Процент правильных: %.2f.</string>
 </resources>
