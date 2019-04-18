@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ГеоКвест 3v2</string>
 
-    <string name="question_saransk">Лондон - столица Англии.</string>
+    <string name="question_london">Лондон - столица Англии.</string>
     <string name="question_ocean">Тихий океан больше Атлантического.</string>
     <string name="question_africa">Нил находится в Египте.</string>
 

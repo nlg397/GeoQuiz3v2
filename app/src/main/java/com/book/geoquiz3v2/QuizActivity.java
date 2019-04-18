@@ -25,7 +25,7 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.question_saransk, true),
+            new Question(R.string.question_london, true),
             new Question(R.string.question_ocean, true),
             new Question(R.string.question_africa, true),
             new Question(R.string.question_spb, false),
@@ -60,9 +60,9 @@ public class QuizActivity extends AppCompatActivity {
             mIncorrectAnswersCount = savedInstanceState.getInt(KEY_INCORRECT_ANSWERS_COUNT, 0);
         }
 
-        mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        mQuestionTextView = (TextView) findViewById(R.id.question_text_view); // for LogCat: FATAL EXCEPTION, NullPointerException
 
-        mTrueButton = (Button) findViewById(R.id.true_button);
+        mTrueButton = (Button) findViewById(R.id.true_button); // for Android Lint, R.id.question_text_view
         mTrueButton.setEnabled(mTrueButtonIsEnabled);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,12 +88,12 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        mNextButton = (Button) findViewById(R.id.next_button);
+        mNextButton = (Button) findViewById(R.id.next_button); // for debug + exception, view breakpoints -> java exception breakpoints -> RuntimeException
         mNextButton.setEnabled(mNextButtonIsEnabled);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length; // for debug
                 updateQuestion();
 
                 setEnabledOfButtons(true);
@@ -148,7 +148,8 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateQuestion() {
-        int question = mQuestionBank[mCurrentIndex].getTextResId();
+        // Log.d(TAG, "Updating question text", new Exception());
+        int question = mQuestionBank[mCurrentIndex].getTextResId(); // breakpoint for debug
         mQuestionTextView.setText(question);
     }
 
