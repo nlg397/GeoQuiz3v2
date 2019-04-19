@@ -3,6 +3,7 @@ package com.book.geoquiz3v2;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,8 +14,7 @@ public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
 
-    private static final String KEY_TRUE_BUTTON_ENABLED = "true_button_is_enabled";
-    private static final String KEY_FALSE_BUTTON_ENABLED = "false_button_is_enabled";
+    private static final String KEY_TRUE_FALSE_BUTTONS_ENABLED = "true_and_false_buttons_are_enabled";
     private static final String KEY_NEXT_BUTTON_ENABLED = "next_button_is_enabled";
     private static final String KEY_CORRECT_ANSWERS_COUNT = "correct_answers_count";
     private static final String KEY_INCORRECT_ANSWERS_COUNT = "incorrect_answers_count";
@@ -35,8 +35,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
 
-    private boolean mTrueButtonIsEnabled = true;
-    private boolean mFalseButtonIsEnabled = true;
+    private boolean mTrueFalseButtonsIsEnabled = true;
     private boolean mNextButtonIsEnabled = false;
     private int mCorrectAnswersCount = 0;
     private int mIncorrectAnswersCount = 0;
@@ -52,18 +51,17 @@ public class QuizActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
 
-            mTrueButtonIsEnabled = savedInstanceState.getBoolean(KEY_TRUE_BUTTON_ENABLED, true);
-            mFalseButtonIsEnabled = savedInstanceState.getBoolean(KEY_FALSE_BUTTON_ENABLED, true);
+            mTrueFalseButtonsIsEnabled = savedInstanceState.getBoolean(KEY_TRUE_FALSE_BUTTONS_ENABLED, true);
             mNextButtonIsEnabled = savedInstanceState.getBoolean(KEY_NEXT_BUTTON_ENABLED, false);
 
             mCorrectAnswersCount = savedInstanceState.getInt(KEY_CORRECT_ANSWERS_COUNT, 0);
             mIncorrectAnswersCount = savedInstanceState.getInt(KEY_INCORRECT_ANSWERS_COUNT, 0);
         }
 
-        mQuestionTextView = (TextView) findViewById(R.id.question_text_view); // for LogCat: FATAL EXCEPTION, NullPointerException
+        mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
-        mTrueButton = (Button) findViewById(R.id.true_button); // for Android Lint, R.id.question_text_view
-        mTrueButton.setEnabled(mTrueButtonIsEnabled);
+        mTrueButton = (Button) findViewById(R.id.true_button);
+        mTrueButton.setEnabled(mTrueFalseButtonsIsEnabled);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +74,7 @@ public class QuizActivity extends AppCompatActivity {
         });
 
         mFalseButton = (Button) findViewById(R.id.false_button);
-        mFalseButton.setEnabled(mFalseButtonIsEnabled);
+        mFalseButton.setEnabled(mTrueFalseButtonsIsEnabled);
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,12 +86,12 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        mNextButton = (Button) findViewById(R.id.next_button); // for debug + exception, view breakpoints -> java exception breakpoints -> RuntimeException
+        mNextButton = (Button) findViewById(R.id.next_button);
         mNextButton.setEnabled(mNextButtonIsEnabled);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length; // for debug
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
 
                 setEnabledOfButtons(true);
@@ -127,8 +125,7 @@ public class QuizActivity extends AppCompatActivity {
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
 
-        savedInstanceState.putBoolean(KEY_TRUE_BUTTON_ENABLED, mTrueButtonIsEnabled);
-        savedInstanceState.putBoolean(KEY_FALSE_BUTTON_ENABLED, mFalseButtonIsEnabled);
+        savedInstanceState.putBoolean(KEY_TRUE_FALSE_BUTTONS_ENABLED, mTrueFalseButtonsIsEnabled);
         savedInstanceState.putBoolean(KEY_NEXT_BUTTON_ENABLED, mNextButtonIsEnabled);
 
         savedInstanceState.putInt(KEY_CORRECT_ANSWERS_COUNT, mCorrectAnswersCount);
@@ -148,8 +145,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateQuestion() {
-        // Log.d(TAG, "Updating question text", new Exception());
-        int question = mQuestionBank[mCurrentIndex].getTextResId(); // breakpoint for debug
+        int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
     }
 
@@ -171,16 +167,14 @@ public class QuizActivity extends AppCompatActivity {
 
     private void setEnabledOfButtons(boolean nextButtonIsPressed) {
         if (nextButtonIsPressed) {
-            mTrueButtonIsEnabled = true;
-            mFalseButtonIsEnabled = true;
+            mTrueFalseButtonsIsEnabled = true;
             mNextButtonIsEnabled = false;
         } else {
-            mTrueButtonIsEnabled = false;
-            mFalseButtonIsEnabled = false;
+            mTrueFalseButtonsIsEnabled = false;
             mNextButtonIsEnabled = true;
         }
-        mTrueButton.setEnabled(mTrueButtonIsEnabled);
-        mFalseButton.setEnabled(mFalseButtonIsEnabled);
+        mTrueButton.setEnabled(mTrueFalseButtonsIsEnabled);
+        mFalseButton.setEnabled(mTrueFalseButtonsIsEnabled);
         mNextButton.setEnabled(mNextButtonIsEnabled);
     }
 
@@ -190,8 +184,10 @@ public class QuizActivity extends AppCompatActivity {
                     (mCorrectAnswersCount + mIncorrectAnswersCount) * 100;
             String message = String.format(getResources().getString(R.string.end_toast),
                     mCorrectAnswersCount, mIncorrectAnswersCount, percent);
-            Toast.makeText(this, message, Toast.LENGTH_LONG)
-                    .show();
+            Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+
             mCorrectAnswersCount = 0;
             mIncorrectAnswersCount = 0;
         }
