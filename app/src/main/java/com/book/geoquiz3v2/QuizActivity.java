@@ -184,8 +184,10 @@ public class QuizActivity extends AppCompatActivity {
             mIncorrectAnswersCount ++;
         }
 
-        String message = String.format(isCheaterMessage, isCorrectMessage);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT)
+        String separatorMessage = getResources().getString(R.string.separator);
+
+        Toast.makeText(this, isCheaterMessage + separatorMessage + isCorrectMessage,
+                Toast.LENGTH_SHORT)
                 .show();
     }
 

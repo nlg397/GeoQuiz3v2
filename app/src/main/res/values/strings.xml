@@ -22,7 +22,8 @@
     <string name="show_answer_button">Показать ответ</string>
     <string name="cheat_button">Подсмотреть ответ!</string>
 
-    <string name="judgment_toast">Ай-яй-яй, читерство - это нехорошо! А насчет твоего ответа: %s</string>
-    <string name="good_fellow_toast">Какой молодец, не поддался соблазну. А ответил ты %s</string>
+    <string name="judgment_toast">Ай-яй-яй, читерство - это нехорошо!</string>
+    <string name="good_fellow_toast">Какой молодец, не поддался соблазну.</string>
+    <string name="separator">&#160;А ответил ты&#160;</string>
 
 </resources>
