@@ -13,13 +13,16 @@
     <string name="false_button">Ложь</string>
     <string name="next_button">Следующий</string>
 
-    <string name="correct_toast">Правильно!</string>
-    <string name="incorrect_toast">Неправильно!</string>
+    <string name="correct_toast">правильно!</string>
+    <string name="incorrect_toast">неправильно!</string>
 
-    <string name="end_toast">Конец. Правильно: %d, неправильно: %d. Процент правильных: %.2f.</string>
+    <string name="end_toast">Конец. Правильных ответов %d, неправильных - %d. Правильных ответов %.2f процентов. Подсмотренных ответов %d.</string>
 
     <string name="warning_text">Ты уверен, что правда хочешь это сделать?</string>
     <string name="show_answer_button">Показать ответ</string>
     <string name="cheat_button">Подсмотреть ответ!</string>
-    <string name="judgment_toast">Ай-яй-яй, читерство - это нехорошо!</string>
+
+    <string name="judgment_toast">Ай-яй-яй, читерство - это нехорошо! А насчет твоего ответа: %s</string>
+    <string name="good_fellow_toast">Какой молодец, не поддался соблазну. А ответил ты %s</string>
+
 </resources>

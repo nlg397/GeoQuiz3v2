@@ -23,6 +23,9 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_CHEAT = 0;
 
+    //private static final String KEY_IS_CHEATER = "is_cheater";
+    private static final String KEY_QUESTIONS_WERE_CHEATED = "questions_were_cheated";
+
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
@@ -47,6 +50,8 @@ public class QuizActivity extends AppCompatActivity {
 
     private boolean mIsCheater;
 
+    private boolean[] mQuestionsWereCheated = new boolean[mQuestionBank.length];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,12 @@ public class QuizActivity extends AppCompatActivity {
 
             mCorrectAnswersCount = savedInstanceState.getInt(KEY_CORRECT_ANSWERS_COUNT, 0);
             mIncorrectAnswersCount = savedInstanceState.getInt(KEY_INCORRECT_ANSWERS_COUNT, 0);
+
+            //mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
+            mQuestionsWereCheated = savedInstanceState.getBooleanArray(KEY_QUESTIONS_WERE_CHEATED);
+            if (mQuestionsWereCheated != null) {
+                mIsCheater = mQuestionsWereCheated[mCurrentIndex];
+            }
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -99,7 +110,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                mIsCheater = false;
+                mIsCheater = mQuestionsWereCheated[mCurrentIndex];
                 updateQuestion();
 
                 setEnabledOfButtons(true);
@@ -151,6 +162,9 @@ public class QuizActivity extends AppCompatActivity {
 
         savedInstanceState.putInt(KEY_CORRECT_ANSWERS_COUNT, mCorrectAnswersCount);
         savedInstanceState.putInt(KEY_INCORRECT_ANSWERS_COUNT, mIncorrectAnswersCount);
+
+        //savedInstanceState.putBoolean(KEY_IS_CHEATER, mIsCheater);
+        savedInstanceState.putBooleanArray(KEY_QUESTIONS_WERE_CHEATED, mQuestionsWereCheated);
     }
 
     @Override
@@ -174,7 +188,11 @@ public class QuizActivity extends AppCompatActivity {
             if (data == null) {
                 return;
             }
-            mIsCheater = CheatActivity.wasAnswerShown(data);
+            if (!mIsCheater) {
+                mQuestionsWereCheated[mCurrentIndex] = CheatActivity.wasAnswerShown(data);
+                mIsCheater = mQuestionsWereCheated[mCurrentIndex];
+            }
+
         }
     }
 
@@ -184,22 +202,34 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue) {
+        // Баллы за читерство?
+        // Баллы за читерство, если ответ подсмотрен после дачи своего ответа, должны быть только через круг
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
-        int messageResId = 0;
+        //int messageResId;
+
+        String isCheaterMessage;
         if (mIsCheater) {
-            messageResId = R.string.judgment_toast;
+            isCheaterMessage = getResources().getString(R.string.judgment_toast);
         } else {
-            if (userPressedTrue == answerIsTrue) {
-                messageResId = R.string.correct_toast;
-                mCorrectAnswersCount ++;
-            } else {
-                messageResId = R.string.incorrect_toast;
-                mIncorrectAnswersCount ++;
-            }
+            isCheaterMessage = getResources().getString(R.string.good_fellow_toast);;
         }
 
-        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
+        String isCorrectMessage;
+        if (userPressedTrue == answerIsTrue) {
+            isCorrectMessage = getResources().getString(R.string.correct_toast);
+            //messageResId = R.string.correct_toast;
+            mCorrectAnswersCount ++;
+        } else {
+            isCorrectMessage = getResources().getString(R.string.incorrect_toast);
+            //messageResId = R.string.incorrect_toast;
+            mIncorrectAnswersCount ++;
+        }
+
+        /*Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
+                .show();*/
+        String message = String.format(isCheaterMessage, isCorrectMessage);
+        Toast.makeText(this, message, Toast.LENGTH_SHORT)
                 .show();
     }
 
@@ -220,15 +250,29 @@ public class QuizActivity extends AppCompatActivity {
         if (mCurrentIndex == mQuestionBank.length - 1) {
             double percent = (double)mCorrectAnswersCount /
                     (mCorrectAnswersCount + mIncorrectAnswersCount) * 100;
+
+            int cheatedQuestionsCount = calculateCheatedQuestions();
+
             String message = String.format(getResources().getString(R.string.end_toast),
-                    mCorrectAnswersCount, mIncorrectAnswersCount, percent);
+                    mCorrectAnswersCount, mIncorrectAnswersCount, percent, cheatedQuestionsCount);
+
             Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 0, 0);
+            //toast.setGravity(Gravity.TOP, 0, 0);
             toast.show();
 
             mCorrectAnswersCount = 0;
             mIncorrectAnswersCount = 0;
         }
+    }
+
+    private int calculateCheatedQuestions() {
+        int count = 0;
+        for (boolean questionWasCheated : mQuestionsWereCheated) {
+            if (questionWasCheated) {
+                count++;
+            }
+        }
+        return count;
     }
 
 }
