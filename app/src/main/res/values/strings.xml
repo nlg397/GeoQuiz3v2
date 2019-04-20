@@ -17,4 +17,9 @@
     <string name="incorrect_toast">Неправильно!</string>
 
     <string name="end_toast">Конец. Правильно: %d, неправильно: %d. Процент правильных: %.2f.</string>
+
+    <string name="warning_text">Ты уверен, что правда хочешь это сделать?</string>
+    <string name="show_answer_button">Показать ответ</string>
+    <string name="cheat_button">Подсмотреть ответ!</string>
+    <string name="judgment_toast">Ай-яй-яй, читерство - это нехорошо!</string>
 </resources>
