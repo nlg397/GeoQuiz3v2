@@ -52,17 +52,22 @@ public class CheatActivity extends AppCompatActivity {
         mAnswerTextView = findViewById(R.id.answer_text_view);
         mShowAnswerButton = findViewById(R.id.show_answer_button);
 
-        mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAnswer();
-                hideButton(mShowAnswerButton);
-            }
-        });
-
         if (mAnswerWasShown) {
-            mShowAnswerButton.callOnClick();
+            showAnswer();
+            // Ломаеца, logcat -> fresh issue on issuetracker.google.com
+            //hideButton(mShowAnswerButton);
+            mShowAnswerButton.setVisibility(View.INVISIBLE);
+
+        } else {
+            mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showAnswer();
+                    hideButton(mShowAnswerButton);
+                }
+            });
         }
+
     }
 
     private void setAnswerShownResult(boolean isAnswerShown) {
