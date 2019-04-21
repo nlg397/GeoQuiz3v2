@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,7 +11,7 @@ import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
 
-    private static final String TAG = "QuizActivity";
+    //private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
 
     private static final String KEY_TRUE_FALSE_BUTTONS_ENABLED = "true_and_false_buttons_are_enabled";
