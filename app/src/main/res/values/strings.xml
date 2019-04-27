@@ -26,4 +26,6 @@
     <string name="good_fellow_toast">Какой молодец, не поддался соблазну.</string>
     <string name="separator">&#160;А ответил ты&#160;</string>
 
+    <string name="api_level_text">API Level %d</string>
+
 </resources>
