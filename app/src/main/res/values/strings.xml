@@ -27,5 +27,7 @@
     <string name="separator">&#160;А ответил ты&#160;</string>
 
     <string name="api_level_text">API Level %d</string>
+    
+    <string name="leftover_cheats_count_text">Осталось %d подсказок.</string>
 
 </resources>

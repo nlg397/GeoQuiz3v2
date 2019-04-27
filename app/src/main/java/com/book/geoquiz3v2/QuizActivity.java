@@ -23,11 +23,14 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String KEY_QUESTIONS_WERE_CHEATED = "questions_were_cheated";
 
+    private static final int MAX_CHEATS = 3;
+
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
     private Button mCheatButton;
     private TextView mQuestionTextView;
+    private TextView mLeftoverCheatsCountTextView;
 
     private Question[] mQuestionBank = new Question[] {
             new Question(R.string.question_london, true),
@@ -107,6 +110,8 @@ public class QuizActivity extends AppCompatActivity {
                 updateQuestion();
 
                 setEnabledOfButtons(true);
+
+                updateLeftoverCheatsCount();
             }
         });
 
@@ -120,6 +125,9 @@ public class QuizActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
         });
+
+        mLeftoverCheatsCountTextView = findViewById(R.id.leftover_cheats_count_text_view);
+        updateLeftoverCheatsCount();
 
         updateQuestion();
     }
@@ -229,6 +237,16 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
         return count;
+    }
+
+    private void updateLeftoverCheatsCount() {
+        int leftoverCheatsCount = MAX_CHEATS - calculateCheatedQuestions();
+        mLeftoverCheatsCountTextView.setText(String.format((String)getResources()
+                .getText(R.string.leftover_cheats_count_text), leftoverCheatsCount));
+
+        if (leftoverCheatsCount <= 0) {
+            mCheatButton.setEnabled(false);
+        }
     }
 
 }
